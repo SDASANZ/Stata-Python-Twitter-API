@@ -5,4 +5,7 @@ To use this command, place all four files into your PERSONAL ado directory. If y
 
 To use the dialog box, run the command **db twitterlw** in Stata. Alternatively, you can add the dialog box to your Stata menus by putting the following commands in your personal *profile.do*:  
 **window menu append item "stUserData" "Stata Twitter Download" "db twitterlw"**  
-**window menu refresh**
+**window menu refresh**  
+  
+    
+The **premiumapi.py** python file is used by this Stata command to access Twitter's API. This file is by Github user lucahammer and the original can be found here: https://gist.github.com/lucahammer/7631896c3023266c16934326a74b594b

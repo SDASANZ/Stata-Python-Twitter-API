@@ -1,0 +1,225 @@
+VERSION 16
+POSITION . . 600 500
+
+DIALOG main, label("Stata Twitter Module") tabtitle("Main")
+BEGIN
+	TEXT		tx_key			10		10		250	., label("Enter your API key:")
+	EDIT		key				@		+20		@	., error("Enter your API key")
+	
+	TEXT		tx_secret		+270	-20		300	., label("Enter your API secret:")
+	EDIT		secret			@		+20		@	., error("Enter your API secret")
+	
+	TEXT		tx_dev			10		+50		250	., label("Enter your Dev Environment Label:")
+	EDIT		dev				@		+20		@	., error("Enter your dev label")
+	
+	TEXT		tx_q			+270	-20		300	., label("Enter your text query lookup:")
+	EDIT		q				@		+20		@	., error("Enter query")
+	
+	TEXT		tx_file			10		+50		250	., label("Enter your new jsonl file path:")
+	EDIT		filename		@		+20		@	., error("Enter file path ending in .jsonl")
+	
+	TEXT		tx_max			@		+30		100	., label("Max # of Tweets:")
+	SPINNER		max				@		+20		80	., default(5) min(1) max(100000)
+	
+	TEXT		tx_paid			+270	-60		@	., label("Paid?")
+	CHECKBOX	paid			@		+20		@	., memory
+	
+	TEXT		tx_save			@		+20		@	., label("SAVE?")
+	CHECKBOX	savefile		@		+20		@	., memory default(1)
+	
+	TEXT		tx_scope		+120	-60		100	., label("Search type:")
+	RADIO		rad_full		@		+20		150	., first label("Full Archive Search") default(on)
+	RADIO		rad_30			@		+20		100	., last label("30 Day Search") default(off)
+	
+	GROUPBOX	gr_dates		5		250		550	200, label("Date Range")
+	
+	TEXT		tx_sdy			10		+20		100	., label("Choose start date?")
+	CHECKBOX	sdy				@		+20		20	., memory onclickon(script sdateon) onclickoff(script sdateoff) default(off)
+	
+	TEXT		tx_stime		+110	-20		100	., label("Choose start time?")
+	CHECKBOX	stimy			@		+20		20	., memory onclickon(script stimeon) onclickoff(script stimeoff) default(on)
+	
+	TEXT		tx_edn			+200	-20		100	., label("Choose end date?")
+	CHECKBOX	edn				@		+20		20	., memory onclickon(script edateon) onclickoff(script edateoff)
+	
+	TEXT		tx_etimy		+110	-20		100	., label("Choose end time?")
+	CHECKBOX	etimy			@		+20		20	., memory onclickon(script etimeon) onclickoff(script etimeoff) default(off)
+	
+	TEXT		tx_sday			10		+20		100	., label("Start date:")
+	TEXT		tx_sdlab		@		+20		40	., label("Day")
+	TEXT		tx_smlab		+40		@		40	., label("Mon")
+	TEXT		tx_sylab		+40		@		60	., label("Year")
+	SPINNER		sday			-80		+20		40	., error("Start day") default(1) min(1) max(31)
+	
+	SPINNER		smon			50		@		40	., error("Start month") default(1) min(1) max(12)
+	
+	SPINNER		syear			90		@		60	., error("Start year") default(2020) min(2005) max(9999)
+	
+	TEXT		tx_eday			320		-40		220	., label("End date:")
+	TEXT		tx_edlab		@		+20		40	., label("Day")
+	TEXT		tx_emlab		+40		@		40	., label("Mon")
+	TEXT		tx_eylab		+40		@		60	., label("Year")
+	SPINNER		eday			-80		+20		40	., error("End day") default(1) min(1) max(31)
+	
+	SPINNER		emon			+40		@		40	., error("End month") default(1) min(1) max(12)
+	
+	SPINNER		eyear			+40		@		60	., error("End year") default(2020) min(2005) max(9999)
+	
+	TEXT		tx_time			10		+30		100 ., label("Start time:")
+	TEXT		tx_shlab		@		+20		40 	., label("Hour")
+	TEXT		tx_smilab		+40		@		40	., label("Min")
+	SPINNER		shour			-40		+20		40	., error("hours in 24") default(0) min(00) max(23)
+	
+	SPINNER		smin			+50		@		40	., error("minutes up to 59") default(0) min(00) max(59)
+	
+	TEXT		tx_etime		320		-40		220 ., label("End time:")
+	TEXT		tx_ehlab		@		+20		40	., label("Hour")
+	TEXT		tx_emilab		+40		@		40	., label("Min")
+	SPINNER		ehour			-40		+20		40	., error("hours in 24") default(23) min(0) max(23)
+	
+	SPINNER		emin			+50		@		40	., error("minutes up to 59") default(59) min(0) max(59)
+	*/
+	
+	
+	
+	
+END
+
+OK ok1,			label("OK") uaction(command) target(stata)
+CANCEL can1,	label("Cancel")
+SUBMIT sub1,	label("Submit") uaction(command) target(stata)
+COPY copy1
+HELP hlp1, view("help twitterlw")
+RESET res1
+
+
+SCRIPT sdateon
+	BEGIN
+		main.sday.enable
+		main.smon.enable
+		main.syear.enable
+		main.stimy.enable
+	END
+	
+SCRIPT sdateoff
+	BEGIN
+		main.sday.disable
+		main.smon.disable
+		main.syear.disable
+		main.stimy.disable
+	END
+
+
+SCRIPT edateon
+	BEGIN
+		main.eday.enable
+		main.emon.enable
+		main.eyear.enable
+		main.etimy.enable
+	END
+	
+SCRIPT edateoff
+		BEGIN
+			main.eday.disable
+			main.emon.disable
+			main.eyear.disable
+			main.etimy.disable
+		END
+
+SCRIPT stimeon
+	BEGIN
+		main.shour.enable
+		main.smin.enable
+	END
+	
+SCRIPT stimeoff
+	BEGIN
+		main.shour.disable
+		main.smin.disable
+	END
+	
+SCRIPT etimeon
+	BEGIN
+		main.ehour.enable
+		main.emin.enable
+	END
+	
+SCRIPT etimeoff
+	BEGIN
+		main.ehour.disable
+		main.emin.disable
+	END
+	
+
+PROGRAM command
+	BEGIN
+		require main.key
+		require main.secret
+		require main.dev
+		require main.q
+		require main.filename
+		if main.stimy & main.edn & !main.etimy {
+			stopbox stop "You must select a time for both start and end dates, you cannot just have one time selected. Please select a time for your end date."
+		}
+		if main.etimy & main.sdy & !main.stimy {
+			stopbox stop "You must select a time for both start and end dates, you cannot just have one time selected. Please select a time for your start date."
+		}
+		put "twitterlw "
+		if main.rad_full {
+			put "fullarchive, "
+		}
+		if main.rad_30 {
+			put "30day, "
+		}
+		
+		put "key(" main.key ") "
+		put "secret(" main.secret ") "
+		put "devenvironment(" main.dev ") "
+		put "query(" main.q ") "
+		put "filename(" main.filename ") "
+		if main.max.isneq(5) {
+			put "maxresults(" main.max ") "
+		}
+		if main.sdy {
+			put "startdate(" main.sday "/" main.smon "/" main.syear
+			if main.stimy {
+				put " "
+				if main.shour.islt(10) {
+					put "0"
+				}
+				put main.shour ":" 
+				if main.smin.islt(10) {
+					put "0"
+				}
+				put main.smin
+			}
+			put ") "
+		}
+		
+		if main.edn {
+			put "enddate(" main.eday "/" main.emon "/" main.eyear
+			if main.etimy {
+				put " "
+				if main.ehour.islt(10) {
+					put "0"
+				}
+				put main.ehour ":"
+				if main.emin.islt(10) {
+					put "0"
+				}
+				put main.emin
+			}
+			put ") "
+		}
+		
+		if main.stimy | main.etimy {
+			put "time "
+		}
+		if main.paid {
+			put "paid "
+		}
+		
+		if main.savefile {
+			put "save"
+		}
+	END

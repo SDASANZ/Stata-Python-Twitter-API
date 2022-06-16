@@ -1,5 +1,7 @@
 program define twitterlw
 
+/*This program uses the python file premiumapi to interface with twitter's API*/
+
 syntax anything(name=scope), KEY(string) SECRET(string) DEVenvironment(string) QUERY(string) FILENAME(string) [PAID TIME MAXresults(integer 5) STARTdate(string) ENDdate(string) SAVE]
 
 clear
